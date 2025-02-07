@@ -1,0 +1,21 @@
+# Virtual environment (if using one)
+venv/
+.venv/
+env/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# SQLite database (use migrations instead)
+db.sqlite3
+
+# Django migration cache
+migrations/__pycache__/
+
+# Ignore environment variables (API keys, secrets, etc.)
+.env
+
+# Ignore system files
+.DS_Store

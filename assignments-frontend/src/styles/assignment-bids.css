@@ -1,0 +1,55 @@
+.assignment-bids-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .assignment-bids-container h2,
+  .assignment-bids-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  .assignment-details {
+    margin-bottom: 20px;
+  }
+  
+  .assignment-details p,
+  .assignment-details ul {
+    margin: 5px 0;
+  }
+  
+  .assignment-details ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .bid-card {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .bid-card p {
+    margin: 5px 0;
+  }
+  
+  .bid-card button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .bid-card button:hover {
+    background-color: #218838;
+  }

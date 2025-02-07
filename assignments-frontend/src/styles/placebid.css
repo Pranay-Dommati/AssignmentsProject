@@ -1,0 +1,111 @@
+/* Global Styles */
+.search-dropdown, .search-input {
+  height: 40px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* Dropdown Styles */
+.search-dropdown {
+  margin-right: 15px;  /* Add space between dropdown and input */
+}
+
+/* Input Styles */
+.search-input {
+  width: 100%;
+}
+
+/* Main container */
+.place-bid-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+/* Filters section */
+.filters-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.filter-group {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.filter-group:last-child {
+  margin-right: 0;
+}
+
+.filter-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.filter-group input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Assignments container */
+.assignments-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+/* Assignment card */
+.assignment-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.assignment-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.assignment-card p {
+  margin: 5px 0;
+}
+
+.assignment-card button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.assignment-card button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .assignments-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .assignments-container {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-container {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    margin-bottom: 10px;
+  }
+}

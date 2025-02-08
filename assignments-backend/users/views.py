@@ -6,17 +6,17 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import LoginSerializer
-
+from django.contrib.auth.hashers import make_password
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-
+    def perform_create(self, serializer):
+        serializer.save(password=make_password(serializer.validated_data['password']))
 
 def home(request):
     return HttpResponse("Welcome to the Assignments Project!")
-
 
 class LoginView(APIView):
     def post(self, request):

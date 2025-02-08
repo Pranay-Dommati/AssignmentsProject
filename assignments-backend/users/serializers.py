@@ -1,13 +1,11 @@
 from rest_framework import serializers
 from .models import User
+from django.contrib.auth.hashers import check_password
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
-        
-        
-    
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -25,7 +23,7 @@ class LoginSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError("Invalid email or password.")
 
-        if user.password != password:
+        if not check_password(password, user.password):
             raise serializers.ValidationError("Invalid email or password.")
 
         data['user'] = user

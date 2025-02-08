@@ -3,10 +3,11 @@ import '../styles/assignment.css';
 import LocationSearch from './LocationSearch'; // Import the LocationSearch component
 
 function AddAssignment() {
+  const user = JSON.parse(localStorage.getItem('user'));
   const [formData, setFormData] = useState({
     subject: '',
     numPages: '',
-    email: JSON.parse(localStorage.getItem('user')).email, // Get the logged-in user's email
+    email: user ? user.email : '', // Check if user exists before accessing email
     collegeOrSchool: '',
     locations: [],
     minBid: '',

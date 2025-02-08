@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/profile.css'; // Ensure styles exist
 
 const Profile = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [user, setUser] = useState(null);
+  const userId = localStorage.getItem('userId');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/${userId}/`);
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        } else {
+          console.error('Failed to fetch user data');
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching user data:', error);
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
 
   if (!user) {
     return <p>No user data found.</p>;
@@ -20,11 +41,11 @@ const Profile = () => {
         </div>
         <div className="detail-item">
           <p><strong>College Name:</strong></p>
-          <p>{user.collegeName}</p>
+          <p>{user.college_name}</p>
         </div>
         <div className="detail-item">
           <p><strong>Mobile Number:</strong></p>
-          <p>{user.mobileNumber}</p>
+          <p>{user.mobile_number}</p>
         </div>
       </div>
     </div>

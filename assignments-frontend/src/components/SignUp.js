@@ -43,8 +43,10 @@ const SignUp = () => {
           body: JSON.stringify(formData),
         });
         if (response.ok) {
+          const data = await response.json();
           localStorage.setItem('loggedIn', 'true');
-          navigate('/');
+          localStorage.setItem('user', JSON.stringify(data)); // Store user data
+          navigate('/profile');
         } else {
           const data = await response.json();
           setErrors({ api: JSON.stringify(data) }); // Convert the error object to a string

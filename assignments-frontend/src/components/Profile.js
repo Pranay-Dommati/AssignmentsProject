@@ -3,10 +3,12 @@ import '../styles/profile.css'; // Ensure styles exist
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true); // Set loading to true before fetching
       try {
         const response = await fetch(`http://localhost:8000/api/users/${userId}/`);
         if (response.ok) {
@@ -17,6 +19,8 @@ const Profile = () => {
         }
       } catch (error) {
         console.error('An error occurred while fetching user data:', error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
 
@@ -24,6 +28,10 @@ const Profile = () => {
       fetchUserData();
     }
   }, [userId]);
+
+  if (loading) {
+    return <p>Loading user data...</p>; // Display loading message
+  }
 
   if (!user) {
     return <p>No user data found.</p>;

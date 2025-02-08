@@ -3,11 +3,20 @@ import '../styles/assignment.css';
 import LocationSearch from './LocationSearch'; // Import the LocationSearch component
 
 function AddAssignment() {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const storedUser = localStorage.getItem('user');
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch (error) {
+    console.error("Error parsing user data from localStorage:", error);
+    // Handle the error appropriately, e.g., set user to null or display an error message
+  }
+
   const [formData, setFormData] = useState({
     subject: '',
     numPages: '',
-    email: user ? user.email : '', // Check if user exists before accessing email
+    email: user ? (user.email ? user.email : '') : '', // Check if user and user.email exist
     collegeOrSchool: '',
     locations: [],
     minBid: '',
@@ -58,16 +67,40 @@ function AddAssignment() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
       setIsSubmitting(true);
-      const allAssignments = JSON.parse(localStorage.getItem('assignments')) || [];
-      const newAssignment = { ...formData, id: allAssignments.length + 1, timestamp: new Date().toISOString() };
-      allAssignments.push(newAssignment);
-      localStorage.setItem('assignments', JSON.stringify(allAssignments));
-      setIsSubmitting(false);
-      setShowConfirmation(true); // Show confirmation modal
+      const formDataToSend = new FormData();
+      for (const key in formData) {
+        if (key === 'locations') {
+          formDataToSend.append(key, JSON.stringify(formData[key]));
+        } else {
+          formDataToSend.append(key, formData[key]);
+        }
+      }
+
+      try {
+        const response = await fetch('http://localhost:8000/api/assignments/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+          body: formDataToSend,
+        });
+
+        if (response.ok) {
+          setIsSubmitting(false);
+          setShowConfirmation(true); // Show confirmation modal
+        } else {
+          const data = await response.json();
+          setErrors({ api: JSON.stringify(data) });
+          setIsSubmitting(false);
+        }
+      } catch (error) {
+        setErrors({ api: 'An error occurred. Please try again.' });
+        setIsSubmitting(false);
+      }
     }
   };
 

@@ -45,6 +45,7 @@ const SignUp = () => {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('userId', data.id); // Ensure userId is stored
           localStorage.setItem('user', JSON.stringify(data)); // Store user data
           navigate('/profile');
         } else {

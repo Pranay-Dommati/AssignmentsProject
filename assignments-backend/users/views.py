@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import User
-from .serializers import UserSerializer
+from .models import User, Assignment
+from .serializers import UserSerializer, AssignmentSerializer
 from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
@@ -14,6 +14,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(password=make_password(serializer.validated_data['password']))
+
+class AssignmentViewSet(viewsets.ModelViewSet):
+    queryset = Assignment.objects.all()
+    serializer_class = AssignmentSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
 
 def home(request):
     return HttpResponse("Welcome to the Assignments Project!")

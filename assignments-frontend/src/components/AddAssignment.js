@@ -1,22 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/assignment.css';
 import LocationSearch from './LocationSearch'; // Import the LocationSearch component
 
 function AddAssignment() {
-  const storedUser = localStorage.getItem('user');
-  let user = null;
-
-  try {
-    user = storedUser ? JSON.parse(storedUser) : null;
-  } catch (error) {
-    console.error("Error parsing user data from localStorage:", error);
-    // Handle the error appropriately, e.g., set user to null or display an error message
-  }
-
   const [formData, setFormData] = useState({
     subject: '',
     numPages: '',
-    email: user ? (user.email ? user.email : '') : '', // Check if user and user.email exist
+    email: '',
     collegeOrSchool: '',
     locations: [],
     minBid: '',
@@ -27,6 +17,29 @@ function AddAssignment() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = localStorage.getItem('userId');
+      try {
+        const response = await fetch(`http://localhost:8000/api/users/${userId}/`);
+        if (response.ok) {
+          const data = await response.json();
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            email: data.email,
+            collegeOrSchool: data.college_name,
+          }));
+        } else {
+          console.error('Failed to fetch user data');
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -127,7 +140,7 @@ function AddAssignment() {
 
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="form-control" readOnly />
+            <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="form-control" />
             {errors.email && <small className="error-text">{errors.email}</small>}
           </div>
 

@@ -7,11 +7,29 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+# class AssignmentSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Assignment
+#         fields = '__all__'
+
+
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
         fields = '__all__'
+        read_only_fields = ('user',)  # Make user field read-only
 
+    def create(self, validated_data):
+        # Get the user from the email provided in the request
+        email = self.context['request'].data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            validated_data['user'] = user
+            return super().create(validated_data)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User not found")
+    
+    
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()

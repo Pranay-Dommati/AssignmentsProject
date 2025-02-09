@@ -29,3 +29,85 @@
   .assignment-card p {
     margin: 5px 0;
   }
+
+
+
+  .user-assignments-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+  }
+  
+  .assignment-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+  }
+  
+  .assignment-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .assignment-card h3 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+  }
+  
+  .assignment-card p {
+    margin: 8px 0;
+    color: #34495e;
+  }
+  
+  .assignment-card ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  .assignment-card li {
+    margin: 5px 0;
+    color: #7f8c8d;
+  }
+  
+  .btn-primary {
+    background-color: #3498db;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2980b9;
+  }
+  
+  .empty-state {
+    text-align: center;
+    color: #7f8c8d;
+    margin-top: 40px;
+  }
+
+
+  /* Add these new styles to your existing CSS file */
+.loading, .error {
+  text-align: center;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+
+.loading {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+}
+
+.error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}

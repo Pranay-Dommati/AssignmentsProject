@@ -98,57 +98,67 @@ function AddAssignment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted');
     if (validateForm()) {
-        console.log('Form is valid');
-        setIsSubmitting(true);
-        const formDataToSend = new FormData();
+      setIsSubmitting(true);
+      const formDataToSend = new FormData();
         
-        // Map the form fields to match the backend model
-        formDataToSend.append('subject', formData.subject);
-        formDataToSend.append('num_pages', formData.numPages);
-        formDataToSend.append('email', formData.email);
-        formDataToSend.append('college_or_school', formData.collegeOrSchool);
-        formDataToSend.append('locations', JSON.stringify(formData.locations));
-        formDataToSend.append('min_bid', formData.minBid);
-        formDataToSend.append('max_bid', formData.maxBid);
-        formDataToSend.append('resource_file', formData.resourceFile);
+      // Map the form fields to match the backend model
+      formDataToSend.append('subject', formData.subject);
+      formDataToSend.append('num_pages', formData.numPages);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('college_or_school', formData.collegeOrSchool);
+      formDataToSend.append('locations', JSON.stringify(formData.locations));
+      formDataToSend.append('min_bid', formData.minBid);
+      formDataToSend.append('max_bid', formData.maxBid);
+      formDataToSend.append('resource_file', formData.resourceFile);
 
-        const csrftoken = getCookie('csrftoken');
+      const csrftoken = getCookie('csrftoken');
 
-        try {
-            console.log('Sending form data:');
-            for (let pair of formDataToSend.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
-            const response = await fetch('http://localhost:8000/api/assignments/', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                },
-                body: formDataToSend,
-            });
+      try {
+        const response = await fetch('http://localhost:8000/api/assignments/', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'X-CSRFToken': csrftoken,
+          },
+          body: formDataToSend,
+        });
 
-            if (response.ok) {
-                console.log('Form submitted successfully');
-                setIsSubmitting(false);
-                setShowConfirmation(true);
-            } else {
-                const data = await response.json();
-                console.error('Error response:', data);
-                setErrors({ api: JSON.stringify(data) });
-                setIsSubmitting(false);
-            }
-        } catch (error) {
-            console.error('Error occurred:', error);
-            setErrors({ api: 'An error occurred. Please try again.' });
-            setIsSubmitting(false);
+        if (response.ok) {
+          console.log('Form submitted successfully');
+          setIsSubmitting(false);
+          setShowConfirmation(true);
+
+          // Dispatch custom event to notify other components
+          const event = new CustomEvent('assignmentCreated');
+          window.dispatchEvent(event);
+          
+          // Clear form
+          setFormData({
+            subject: '',
+            numPages: '',
+            email: formData.email,
+            collegeOrSchool: formData.collegeOrSchool,
+            locations: [],
+            minBid: '',
+            maxBid: '',
+            resourceFile: null,
+          });
+        } else {
+          const data = await response.json();
+          console.error('Error response:', data);
+          setErrors({ api: JSON.stringify(data) });
+          setIsSubmitting(false);
         }
+      } catch (error) {
+        console.error('Error occurred:', error);
+        setErrors({ api: 'An error occurred. Please try again.' });
+        setIsSubmitting(false);
+      }
     } else {
-        console.log('Form is invalid');
+      console.log('Form is invalid');
     }
-};
+  };
 
   const closeModal = () => {
     setShowConfirmation(false);

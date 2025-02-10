@@ -7,41 +7,51 @@ const UserAssignments = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchUserAssignments = async () => {
-      try {
-        // Get user data from localStorage
-        const userData = JSON.parse(localStorage.getItem('user'));
-        if (!userData || !userData.email) {
-          throw new Error('User email not found');
-        }
-
-        const response = await fetch(`http://localhost:8000/api/user-assignments/${userData.email}/`, {
-          credentials: 'include',
-          headers: {
-            'Accept': 'application/json',
-          }
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch assignments');
-        }
-
-        const data = await response.json();
-        setAssignments(data);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching assignments:', err);
-        setError(err.message);
-        setLoading(false);
+  const fetchUserAssignments = async () => {
+    try {
+      const userData = JSON.parse(localStorage.getItem('user'));
+      if (!userData || !userData.email) {
+        throw new Error('User email not found');
       }
+
+      const response = await fetch(`http://localhost:8000/api/user-assignments/${userData.email}/`, {
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch assignments');
+      }
+
+      const data = await response.json();
+      setAssignments(data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching assignments:', err);
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserAssignments();
+
+    // Add event listener for new assignments
+    const handleNewAssignment = () => {
+      console.log('New assignment created, refreshing list...');
+      fetchUserAssignments();
     };
 
-    fetchUserAssignments();
+    window.addEventListener('assignmentCreated', handleNewAssignment);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('assignmentCreated', handleNewAssignment);
+    };
   }, []);
-
-
 
   if (loading) {
     return (
@@ -58,8 +68,6 @@ const UserAssignments = () => {
       </div>
     );
   }
-
-  // ... rest of your component code remains the same ...
 
   return (
     <div className="user-assignments-container">

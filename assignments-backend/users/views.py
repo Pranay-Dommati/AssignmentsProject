@@ -31,7 +31,6 @@ class AssignmentViewSet(viewsets.ModelViewSet):
         except User.DoesNotExist:
             raise serializers.ValidationError("User not found")
         
-        
 def home(request):
     return HttpResponse("Welcome to the Assignments Project!")
 
@@ -59,8 +58,6 @@ def get_current_user(request):
     else:
         return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
     
-    
-
 @api_view(['GET'])
 def get_user_assignments(request, user_email):
     try:

@@ -10,12 +10,13 @@ const UserAssignments = () => {
   useEffect(() => {
     const fetchUserAssignments = async () => {
       try {
-        const userEmail = localStorage.getItem('email'); // Get email from localStorage
-        if (!userEmail) {
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || !userData.email) {
           throw new Error('User email not found');
         }
 
-        const response = await fetch(`http://localhost:8000/api/user-assignments/${userEmail}/`, {
+        const response = await fetch(`http://localhost:8000/api/user-assignments/${userData.email}/`, {
           credentials: 'include',
           headers: {
             'Accept': 'application/json',
@@ -39,6 +40,8 @@ const UserAssignments = () => {
 
     fetchUserAssignments();
   }, []);
+
+
 
   if (loading) {
     return (

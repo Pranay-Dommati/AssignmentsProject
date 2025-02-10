@@ -26,14 +26,15 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include cookies for session authentication
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('loggedIn', 'true');
-        localStorage.setItem('userId', data.user_id); // Ensure userId is stored
-        localStorage.setItem('user', JSON.stringify(data.user)); // Store user data
+        localStorage.setItem('userId', data.user_id);
+        localStorage.setItem('email', data.user.email); // Add this line to store email
+        localStorage.setItem('user', JSON.stringify(data.user));
         navigate('/profile');
       } else {
         const data = await response.json();
@@ -42,7 +43,7 @@ const Login = () => {
     } catch (error) {
       setErrors({ api: 'An error occurred. Please try again.' });
     }
-  };
+};
 
   return (
     <div className="auth-container">

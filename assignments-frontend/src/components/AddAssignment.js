@@ -101,7 +101,7 @@ function AddAssignment() {
     if (validateForm()) {
       setIsSubmitting(true);
       const formDataToSend = new FormData();
-        
+
       // Map the form fields to match the backend model
       formDataToSend.append('subject', formData.subject);
       formDataToSend.append('num_pages', formData.numPages);

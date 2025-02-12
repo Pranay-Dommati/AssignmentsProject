@@ -9,7 +9,6 @@ router.register(r'assignments', AssignmentViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('login/', LoginView.as_view(), name='login'),
-    path('users/me/', get_current_user, name='get_current_user'),
+    path('users/me/', get_current_user, name='current-user'),  # Add this line
     path('user-assignments/<str:user_email>/', get_user_assignments, name='user-assignments'),
-
 ]

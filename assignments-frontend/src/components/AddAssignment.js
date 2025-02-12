@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/assignment.css';
-import LocationSearch from './LocationSearch'; // Import the LocationSearch component
+import LocationSearch from './LocationSearch';
 
 function AddAssignment() {
   const [formData, setFormData] = useState({
@@ -11,7 +11,7 @@ function AddAssignment() {
     locations: [],
     minBid: '',
     maxBid: '',
-    resourceFile: null, // New field for resource file
+    resourceFile: null,
   });
 
   const [errors, setErrors] = useState({});
@@ -20,27 +20,47 @@ function AddAssignment() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/users/me/', {
-          credentials: 'include', // Include cookies for session authentication
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            email: data.email,
-            collegeOrSchool: data.college_name,
-          }));
-        } else {
-          console.error('Failed to fetch user data');
+        try {
+            // First try to get user data from localStorage
+            const userData = JSON.parse(localStorage.getItem('user'));
+            if (userData) {
+                setFormData(prevData => ({
+                    ...prevData,
+                    email: userData.email,
+                    collegeOrSchool: userData.college_name
+                }));
+                return;
+            }
+
+            // If not in localStorage, try to fetch from API
+            const response = await fetch('http://localhost:8000/api/users/me/', {
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                setFormData(prevData => ({
+                    ...prevData,
+                    email: data.email,
+                    collegeOrSchool: data.college_name
+                }));
+            } else {
+                throw new Error('Failed to fetch user data');
+            }
+        } catch (error) {
+            console.error('An error occurred while fetching user data:', error);
+            // Redirect to login if user is not authenticated
+            window.location.href = '/login';
         }
-      } catch (error) {
-        console.error('An error occurred while fetching user data:', error);
-      }
     };
 
     fetchUserData();
-  }, []);
+}, []);
+
+
 
   const getCookie = (name) => {
     let cookieValue = null;

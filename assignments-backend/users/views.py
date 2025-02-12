@@ -22,48 +22,37 @@ class UserViewSet(viewsets.ModelViewSet):
 class AssignmentViewSet(viewsets.ModelViewSet):
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        email = self.request.data.get('email')
-        try:
-            user = User.objects.get(email=email)
-            serializer.save(user=user)
-        except User.DoesNotExist:
-            raise serializers.ValidationError("User not found")
-        
+        serializer.save(user=self.request.user)
+
 def home(request):
     return HttpResponse("Welcome to the Assignments Project!")
 
 class LoginView(APIView):
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        print(f"Login attempt with email: {email} and password: {password}")  # Debugging log
-        user = authenticate(request, email=email, password=password)
-        if user is not None:
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
             login(request, user)
             return Response({
                 'user_id': user.id,
                 'user': UserSerializer(user).data,
             })
-        else:
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_current_user(request):
-    user = request.user
-    if user.is_authenticated:
-        serializer = UserSerializer(user)
+    if request.user.is_authenticated:
+        serializer = UserSerializer(request.user)
         return Response(serializer.data)
-    else:
-        return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-    
+    return Response({'error': 'Not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
 @api_view(['GET'])
 def get_user_assignments(request, user_email):
     try:
-        # Get the user first
         user = User.objects.get(email=user_email)
-        # Then get their assignments
         assignments = Assignment.objects.filter(user=user).order_by('-timestamp')
         serializer = AssignmentSerializer(assignments, many=True)
         return Response(serializer.data)

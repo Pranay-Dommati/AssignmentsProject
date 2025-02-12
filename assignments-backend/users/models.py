@@ -1,10 +1,17 @@
 from django.db import models
+from django.utils import timezone
+
 
 class User(models.Model):
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     college_name = models.CharField(max_length=255)
     mobile_number = models.CharField(max_length=10)
+    last_login = models.DateTimeField(null=True, blank=True)
+
+    def update_last_login(self):
+        self.last_login = timezone.now()
+        self.save(update_fields=['last_login'])
 
     def __str__(self):
         return self.email

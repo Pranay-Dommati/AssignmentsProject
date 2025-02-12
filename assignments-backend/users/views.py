@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import serializers
+from django.utils import timezone
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -22,10 +23,14 @@ class UserViewSet(viewsets.ModelViewSet):
 class AssignmentViewSet(viewsets.ModelViewSet):
     queryset = Assignment.objects.all()
     serializer_class = AssignmentSerializer
-    permission_classes = [IsAuthenticated]
-
+    
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        email = self.request.data.get('email')
+        try:
+            user = User.objects.get(email=email)
+            serializer.save(user=user)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User not found")
 
 def home(request):
     return HttpResponse("Welcome to the Assignments Project!")
@@ -35,7 +40,10 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data['user']
-            login(request, user)
+            # Update last_login without using django.contrib.auth
+            user.last_login = timezone.now()
+            user.save(update_fields=['last_login'])
+            
             return Response({
                 'user_id': user.id,
                 'user': UserSerializer(user).data,

@@ -14,9 +14,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
+    user_email = serializers.EmailField(source='user.email', read_only=True)
     class Meta:
         model = Assignment
         fields = '__all__'
+        fields = ['id', 'subject', 'num_pages', 'college_or_school', 'locations', 
+                 'min_bid', 'max_bid', 'resource_file', 'timestamp', 'user', 'user_email']
         read_only_fields = ('user',)  # Make user field read-only
 
     def create(self, validated_data):

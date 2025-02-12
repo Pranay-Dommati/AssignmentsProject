@@ -63,45 +63,51 @@ function PlaceBid() {
     return R * c;
   };
 
-  const fetchAssignments = async () => {
-    try {
-      const currentUser = JSON.parse(localStorage.getItem('user'));
-      if (!currentUser || !currentUser.email) {
-        throw new Error('Please log in to view assignments');
-      }
+  // Inside the fetchAssignments function, update the filtering logic:
 
-      const response = await fetch(`http://localhost:8000/api/assignments/`, {
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch assignments');
-      }
-
-      const data = await response.json();
-      
-      const otherUsersAssignments = data
-        .filter(assignment => assignment.user && assignment.user.email !== currentUser.email)
-        .map(assignment => {
-          const firstLocation = assignment.locations && assignment.locations[0];
-          const distance = firstLocation ? calculateDistance(
-            userLocation.lat,
-            userLocation.lng,
-            firstLocation.lat,
-            firstLocation.lng
-          ) : Infinity;
-          return { ...assignment, distance };
-        });
-
-      setAllAssignments(otherUsersAssignments);
-      applyFiltersAndPagination(otherUsersAssignments);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching assignments:', err);
-      setError(err.message);
-      setLoading(false);
+const fetchAssignments = async () => {
+  try {
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    if (!currentUser || !currentUser.email) {
+      throw new Error('Please log in to view assignments');
     }
-  };
+
+    const response = await fetch(`http://localhost:8000/api/assignments/`, {
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch assignments');
+    }
+
+    const data = await response.json();
+    console.log(data)
+
+    // Filter out assignments created by the current user
+    const otherUsersAssignments = data.filter(assignment => {
+      // Check if the assignment has a user and their email is different from current user
+      console.log(assignment.user.email, currentUser.email);
+      return assignment.user && assignment.user_email !== currentUser.email;
+    }).map(assignment => {
+      const firstLocation = assignment.locations && assignment.locations[0];
+      const distance = firstLocation ? calculateDistance(
+        userLocation.lat,
+        userLocation.lng,
+        firstLocation.lat,
+        firstLocation.lng
+      ) : Infinity;
+      return { ...assignment, distance };
+    });
+
+    setAllAssignments(otherUsersAssignments);
+    applyFiltersAndPagination(otherUsersAssignments);
+    setLoading(false);
+  } catch (err) {
+    console.error('Error fetching assignments:', err);
+    setError(err.message);
+    setLoading(false);
+  }
+};
 
   const applyFiltersAndPagination = (assignments) => {
     let filtered = [...assignments];

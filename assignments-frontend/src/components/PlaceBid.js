@@ -19,8 +19,6 @@ function PlaceBid() {
     switch(filterBy) {
       case 'nearby':
         return 'Search assignments in nearby locations...';
-      case 'bid':
-        return 'Search by bid range...';
       case 'college':
         return 'Search assignments by college/school...';
       default:
@@ -173,7 +171,6 @@ function PlaceBid() {
           onChange={(e) => setFilterBy(e.target.value)}
         >
           <option value="nearby">Sort by Nearby</option>
-          <option value="bid">Sort by Bid</option>
           <option value="college">Sort by College</option>
         </select>
       </div>

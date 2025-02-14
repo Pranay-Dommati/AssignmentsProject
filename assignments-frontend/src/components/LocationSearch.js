@@ -26,10 +26,10 @@ const LocationSearch = ({ onSelectLocation }) => {
             }
 
             // Create and load the script
+            const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
             const script = document.createElement("script");
             script.type = 'text/javascript';
-            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDS99B9V5AsT4YPZmkc80PMjPZ07dZ3s-A&libraries=places&callback=initMap`;
-            script.async = true;
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap`;            script.async = true;
             script.defer = true;
 
             // Define the callback function

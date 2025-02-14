@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "../styles/location-search.css";
 
+
 const LocationSearch = ({ onSelectLocation }) => {
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState([]);

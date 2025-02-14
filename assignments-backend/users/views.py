@@ -68,3 +68,8 @@ def get_user_assignments(request, user_email):
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+def get_csrf_token(request):
+    return JsonResponse({'csrfToken': get_token(request)})
